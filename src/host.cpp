@@ -29,6 +29,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
 #define DATA_SIZE 4096
+#define MATRIX_WIDTH (64)
 
 #include <vector>
 #include <unistd.h>
@@ -94,6 +95,46 @@ void set_callback(cl::Event event, const char* queue_name) {
     event.setCallback(CL_COMPLETE, event_cb, (void*)queue_name);
 }
 
+float * Create_matrix(void)
+{
+  float * Matrix = static_cast<float *>(
+      malloc(MATRIX_WIDTH * MATRIX_WIDTH * sizeof(float)));
+  if (Matrix == NULL)
+  {
+    std::cerr << "Could not allocate matrix." << std::endl;
+    exit (EXIT_FAILURE);
+  }
+  return Matrix;
+}
+
+void Destroy_matrix(float * Matrix)
+{
+  free(Matrix);
+}
+
+void Randomize_matrix(float * Matrix)
+{
+  for (int Y = 0; Y < MATRIX_WIDTH; Y++)
+    for (int X = 0; X < MATRIX_WIDTH; X++)
+      Matrix[Y * MATRIX_WIDTH + X] = rand();
+}
+
+bool Compare_matrices(const float *Matrix_1,
+                      const float *Matrix_2)
+{
+  bool Equal = true;
+  for (int Y = 0; Y < MATRIX_WIDTH; Y++)
+    for (int X = 0; X < MATRIX_WIDTH; X++)
+      if ((Matrix_1[Y * MATRIX_WIDTH + X] - Matrix_2[Y * MATRIX_WIDTH + X]) / Matrix_1[Y * MATRIX_WIDTH + X] > 0.01 ||
+          (Matrix_1[Y * MATRIX_WIDTH + X] - Matrix_2[Y * MATRIX_WIDTH + X]) / Matrix_1[Y * MATRIX_WIDTH + X] < -0.01)
+      //if (Matrix_1[Y * MATRIX_WIDTH + X] != Matrix_2[Y * MATRIX_WIDTH + X])
+      {
+        std::cout << Matrix_1[Y * MATRIX_WIDTH + X] << "!=" << Matrix_2[Y * MATRIX_WIDTH + X] << std::endl;
+        Equal = false;
+      }
+  return Equal;
+}
+
 int main(int argc, char **argv)
 {
     // ------------------------------------------------------------------------------------
@@ -154,7 +195,6 @@ int main(int argc, char **argv)
     krnl_vector_add.setArg(0, in1_buf);
     krnl_vector_add.setArg(1, in2_buf);
     krnl_vector_add.setArg(2, in3_buf);
-    krnl_vector_add.setArg(3, DATA_SIZE);
 
     q.enqueueMigrateMemObjects({in1_buf, in2_buf}, 0 /* 0 means from host*/);
     q.enqueueNDRangeKernel(krnl_vector_add, offset, global, local, nullptr,
@@ -165,7 +205,6 @@ int main(int argc, char **argv)
     krnl_vector_mult.setArg(0, in3_buf);
     krnl_vector_mult.setArg(1, in2_buf);
     krnl_vector_mult.setArg(2, in4_buf);
-    krnl_vector_mult.setArg(3, DATA_SIZE);
 
     q.enqueueMigrateMemObjects({in3_buf, in2_buf}, 0 /* 0 means from host*/);
     q.enqueueNDRangeKernel(krnl_vector_mult, offset, global, local, nullptr,
@@ -176,7 +215,6 @@ int main(int argc, char **argv)
     krnl_vector_mult2.setArg(0, in4_buf);
     krnl_vector_mult2.setArg(1, in1_buf);
     krnl_vector_mult2.setArg(2, out_buf);
-    krnl_vector_mult2.setArg(3, DATA_SIZE);
 
     q.enqueueMigrateMemObjects({in4_buf, in1_buf}, 0 /* 0 means from host*/);
     q.enqueueNDRangeKernel(krnl_vector_mult2, offset, global, local, nullptr,
