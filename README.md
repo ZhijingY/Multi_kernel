@@ -1,3 +1,7 @@
+source sourceMe
+
+make all
+
 sudo ifconfig enx000ec6838bb0 10.10.7.2 netmask 255.0.0.0
 
 scp -r  package/sd_card/* root@10.10.7.1:/media/sd-mmcblk0p1/
