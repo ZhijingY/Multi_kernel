@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vitis Analyzer v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# 
+# Start of session at: Thu Apr 11 16:56:14 2024
+# Process ID: 231629
+# Current directory: /home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/summary
+# Command line: vitis_analyzer xclbin.run_summary
+# Log file: /home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/summary/vitis_analyzer.log
+# Journal file: /home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/summary/vitis_analyzer.jou
+#-----------------------------------------------------------
+start_gui
+create_project dummy

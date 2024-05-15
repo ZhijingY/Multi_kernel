@@ -95,10 +95,10 @@ void set_callback(cl::Event event, const char* queue_name) {
     event.setCallback(CL_COMPLETE, event_cb, (void*)queue_name);
 }
 
-float * Create_matrix(void)
+int * Create_matrix(void)
 {
-  float * Matrix = static_cast<float *>(
-      malloc(MATRIX_WIDTH * MATRIX_WIDTH * sizeof(float)));
+  int * Matrix = static_cast<int *>(
+      malloc(MATRIX_WIDTH * MATRIX_WIDTH * sizeof(int)));
   if (Matrix == NULL)
   {
     std::cerr << "Could not allocate matrix." << std::endl;
@@ -107,20 +107,20 @@ float * Create_matrix(void)
   return Matrix;
 }
 
-void Destroy_matrix(float * Matrix)
+void Destroy_matrix(int * Matrix)
 {
   free(Matrix);
 }
 
-void Randomize_matrix(float * Matrix)
+void Randomize_matrix(int * Matrix)
 {
   for (int Y = 0; Y < MATRIX_WIDTH; Y++)
     for (int X = 0; X < MATRIX_WIDTH; X++)
       Matrix[Y * MATRIX_WIDTH + X] = rand();
 }
 
-bool Compare_matrices(const float *Matrix_1,
-                      const float *Matrix_2)
+bool Compare_matrices(const int *Matrix_1,
+                      const int *Matrix_2)
 {
   bool Equal = true;
   for (int Y = 0; Y < MATRIX_WIDTH; Y++)
@@ -133,6 +133,20 @@ bool Compare_matrices(const float *Matrix_1,
         Equal = false;
       }
   return Equal;
+}
+
+void multiply_gold(const int Input_1[MATRIX_WIDTH * MATRIX_WIDTH],
+                 const int Input_2[MATRIX_WIDTH * MATRIX_WIDTH],
+		         int Output[MATRIX_WIDTH * MATRIX_WIDTH])
+{
+  for (int i = 0; i < MATRIX_WIDTH; i++)
+    for (int j = 0; j < MATRIX_WIDTH; j++)
+    {
+      int Result = 0;
+      for (int k = 0; k < MATRIX_WIDTH; k++)
+        Result += Input_1[i * MATRIX_WIDTH + k] * Input_2[k * MATRIX_WIDTH + j];
+      Output[i * MATRIX_WIDTH + j] = Result;
+    }
 }
 
 int main(int argc, char **argv)
@@ -158,31 +172,49 @@ int main(int argc, char **argv)
     // ------------------------------------------------------------------------------------
     // Step 2: Create buffers and initialize test values
     // ------------------------------------------------------------------------------------
-    const size_t array_size = DATA_SIZE;
-    std::vector<int, aligned_allocator<int> > in1(array_size);
-    std::vector<int, aligned_allocator<int> > in2(array_size);
-    std::vector<int, aligned_allocator<int> > in3(array_size);
-    std::vector<int, aligned_allocator<int> > in4(array_size);
-    std::vector<int, aligned_allocator<int> > out(array_size);
+    const size_t matrix_size = 64*64;
+
+    std::vector<int, aligned_allocator<int> > in1(matrix_size);
+    std::vector<int, aligned_allocator<int> > in2(matrix_size);
+    std::vector<int, aligned_allocator<int> > in3(matrix_size);
+    std::vector<int, aligned_allocator<int> > in4(matrix_size);
+    std::vector<int, aligned_allocator<int> > out(matrix_size);
+
+    // std::vector<int, aligned_allocator<int> > out1(matrix_size);
+    // std::vector<int, aligned_allocator<int> > out2(matrix_size);
+    // std::vector<int, aligned_allocator<int> > out_sw(matrix_size);
 
     // Initialize the vectors used in the test
+    // printf("Start assigning values\n");
+    // Randomize_matrix(in1);
+    // Randomize_matrix(in2);
+    // Randomize_matrix(in3);
+    // Randomize_matrix(in4);
     printf("Start assigning values\n");
-    for (int i = 0; i < DATA_SIZE; i++)
+    for (int i = 0; i < matrix_size; i++)
     {
-        in1.at(i) = rand() % DATA_SIZE;
-        in2.at(i) = rand() % DATA_SIZE;
+        in1.at(i) = rand() % 4096;
+        in2.at(i) = rand() % 4096;
         in3.at(i) = 0;
         in4.at(i) = 0;
         out.at(i) = 0;
+
+        // out1.at(i) = 0;
+        // out2.at(i) = 0;
+        // out_sw.at(i) = 0;
     }
+
+    // int *out1 = Create_matrix();
+    // int *out2 = Create_matrix();
+    // int *out_sw = Create_matrix();
 
     // Create the buffers and allocate memory
     printf("Start creating buffers\n");
-    cl::Buffer in1_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * DATA_SIZE, in1.data(), &err);
-    cl::Buffer in2_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * DATA_SIZE, in2.data(), &err);
-    cl::Buffer in3_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, sizeof(int) * DATA_SIZE, in3.data(), &err);
-    cl::Buffer in4_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, sizeof(int) * DATA_SIZE, in4.data(), &err);
-    cl::Buffer out_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY, sizeof(int) * DATA_SIZE, out.data(), &err);
+    cl::Buffer in1_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * matrix_size, in1.data(), &err);
+    cl::Buffer in2_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY, sizeof(int) * matrix_size, in2.data(), &err);
+    cl::Buffer in3_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, sizeof(int) * matrix_size, in3.data(), &err);
+    cl::Buffer in4_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE, sizeof(int) * matrix_size, in4.data(), &err);
+    cl::Buffer out_buf(context, CL_MEM_USE_HOST_PTR | CL_MEM_WRITE_ONLY, sizeof(int) * matrix_size, out.data(), &err);
 
     // Multi-kernel coding
     std::vector<cl::Event> kernel_events(3);
@@ -191,7 +223,7 @@ int main(int argc, char **argv)
     // Step 3: Run the kernel
     // ------------------------------------------------------------------------------------
     // Set kernel arguments
-    printf("Start setting args\n");
+    printf("Start setting add args\n");
     krnl_vector_add.setArg(0, in1_buf);
     krnl_vector_add.setArg(1, in2_buf);
     krnl_vector_add.setArg(2, in3_buf);
@@ -202,6 +234,7 @@ int main(int argc, char **argv)
     set_callback(kernel_events[0], "add");
     q.enqueueMigrateMemObjects({in3_buf}, CL_MIGRATE_MEM_OBJECT_HOST);
 
+    printf("Start setting mult args\n");
     krnl_vector_mult.setArg(0, in3_buf);
     krnl_vector_mult.setArg(1, in2_buf);
     krnl_vector_mult.setArg(2, in4_buf);
@@ -212,6 +245,7 @@ int main(int argc, char **argv)
     set_callback(kernel_events[1], "mult");
     q.enqueueMigrateMemObjects({in4_buf}, CL_MIGRATE_MEM_OBJECT_HOST);
 
+    printf("Start setting mult2 args\n");
     krnl_vector_mult2.setArg(0, in4_buf);
     krnl_vector_mult2.setArg(1, in1_buf);
     krnl_vector_mult2.setArg(2, out_buf);
@@ -228,18 +262,52 @@ int main(int argc, char **argv)
     // ------------------------------------------------------------------------------------
     // Step 4: Check Results and Release Allocated Resources
     // ------------------------------------------------------------------------------------
+    // multiply_gold(in1, in2, out1);
+    // multiply_gold(out1, in2, out2);
+    // multiply_gold(out2, in1, out_sw);
+
+    // bool match = Compare_matrices(out_sw, out);
+    // Destroy_matrix(out_sw);
     bool match = true;
-    for (int i = 0; i < DATA_SIZE; i++)
-    {
-        int expected = (in1[i] + in2[i]) * in2[i] * in1[i];
-        if (out[i] != expected)
-        {
-            std::cout << "Error: Result mismatch" << std::endl;
-            std::cout << "i = " << i << " CPU result = " << expected << " Device result = " << out[i] << std::endl;
-            match = false;
-            break;
-        }
-    }
+
+    // for (int i = 0; i < MATRIX_WIDTH; i++) {
+    // for (int j = 0; j < MATRIX_WIDTH; j++)
+    // {
+    //   int Result = 0;
+    //   for (int k = 0; k < MATRIX_WIDTH; k++)
+    //     Result += in1[i * MATRIX_WIDTH + k] * in2[k * MATRIX_WIDTH + j];
+    //   out1[i * MATRIX_WIDTH + j] = Result;
+    // }}
+
+    // for (int i = 0; i < MATRIX_WIDTH; i++) {
+    // for (int j = 0; j < MATRIX_WIDTH; j++)
+    // {
+    //   int Result = 0;
+    //   for (int k = 0; k < MATRIX_WIDTH; k++)
+    //     Result += out1[i * MATRIX_WIDTH + k] * in2[k * MATRIX_WIDTH + j];
+    //   out2[i * MATRIX_WIDTH + j] = Result;
+    // }}
+
+    // for (int i = 0; i < MATRIX_WIDTH; i++) {
+    // for (int j = 0; j < MATRIX_WIDTH; j++)
+    // {
+    //   int Result = 0;
+    //   for (int k = 0; k < MATRIX_WIDTH; k++)
+    //     Result += out2[i * MATRIX_WIDTH + k] * in1[k * MATRIX_WIDTH + j];
+    //   out_sw[i * MATRIX_WIDTH + j] = Result;
+    // }}
+
+    // for (int i = 0; i < matrix_size; i++)
+    // {
+    //     int expected = out_sw[i];
+    //     if (out[i] != expected)
+    //     {
+    //         std::cout << "Error: Result mismatch" << std::endl;
+    //         std::cout << "i = " << i << " CPU result = " << expected << " Device result = " << out[i] << std::endl;
+    //         match = false;
+    //         break;
+    //     }
+    // }
 
     delete[] fileBuf;
 

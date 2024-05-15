@@ -9,10 +9,10 @@
 <ENTRY>
 {
  "type": "ET_CmdStep",
- "dateTimestamp": "Wed Jan 31 17:52:31 2024",
- "timestampMillis": "1706741551040",
+ "dateTimestamp": "Mon Mar 25 20:42:38 2024",
+ "timestampMillis": "1711413758760",
  "buildStep": {
-  "cmdId": "ec8557c8-ce0f-4cde-9d24-eac2b190ac63",
+  "cmdId": "e9654947-212f-4c67-9d8a-257e0b932e55",
   "name": "v++",
   "logFile": "/home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/_x/package/package.steps.log",
   "commandLine": "/tools/Xilinx/Vitis/2021.1/bin/unwrapped/lnx64.o/v++  --vivado.prop \"run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --advanced.misc \"report=type report_timing_summary name impl_report_timing_summary_post_route_phys_opt_design_summary steps {post_route_phys_opt_design} runs {impl_1} options {-max_paths 10}\" -p -t hw --config ../../src/zcu102.cfg ./vmulti.xclbin --package.out_dir package --package.rootfs /opt/platforms/xilinx-zynqmp-common-v2021.1/rootfs.ext4 --package.sd_file vmulti.xclbin --package.sd_file /opt/platforms/xilinx-zynqmp-common-v2021.1/Image --package.sd_file xrt.ini --package.sd_file emconfig.json --package.sd_file app.exe --package.sd_file run_app.sh ",
@@ -53,10 +53,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Jan 31 17:52:31 2024",
- "timestampMillis": "1706741551040",
+ "dateTimestamp": "Mon Mar 25 20:42:38 2024",
+ "timestampMillis": "1711413758761",
  "status": {
-  "cmdId": "ec8557c8-ce0f-4cde-9d24-eac2b190ac63",
+  "cmdId": "e9654947-212f-4c67-9d8a-257e0b932e55",
   "state": "CS_RUNNING"
  }
 }
@@ -64,8 +64,8 @@
 <ENTRY>
 {
  "type": "ET_FlowMetaData",
- "dateTimestamp": "Wed Jan 31 17:52:33 2024",
- "timestampMillis": "1706741553968",
+ "dateTimestamp": "Mon Mar 25 20:42:41 2024",
+ "timestampMillis": "1711413761695",
  "buildSummary": {
   "hardwarePlatform": "xilinx_zcu102_base_202110_1.xpfm",
   "hardwareDsa": "xilinx_zcu102_base_202110_1.xsa",
@@ -92,7 +92,7 @@
     "name": "vmulti",
     "file": "/home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/vmulti.xclbin",
     "reports": [],
-    "uuid": "2cae05d6-bd52-4745-9183-ec22f198d03d"
+    "uuid": "74cf3e58-c7d7-40a9-94ed-57cddf2951d8"
    },
    "kernels": []
   }
@@ -102,8 +102,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Jan 31 17:52:58 2024",
- "timestampMillis": "1706741578810",
+ "dateTimestamp": "Mon Mar 25 20:43:07 2024",
+ "timestampMillis": "1711413787431",
  "report": {
   "path": "/home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/_x/reports/package/v++_package_a_guidance.html",
   "name": "",
@@ -116,8 +116,8 @@
 <ENTRY>
 {
  "type": "ET_Report",
- "dateTimestamp": "Wed Jan 31 17:52:58 2024",
- "timestampMillis": "1706741578811",
+ "dateTimestamp": "Mon Mar 25 20:43:07 2024",
+ "timestampMillis": "1711413787431",
  "report": {
   "path": "/home/zyao/Desktop/multi_kernel/Multi_kernel/zcu102/hw/_x/v++_package_a_guidance.pb",
   "name": "",
@@ -130,10 +130,10 @@
 <ENTRY>
 {
  "type": "ET_Status",
- "dateTimestamp": "Wed Jan 31 17:52:58 2024",
- "timestampMillis": "1706741578811",
+ "dateTimestamp": "Mon Mar 25 20:43:07 2024",
+ "timestampMillis": "1711413787432",
  "status": {
-  "cmdId": "ec8557c8-ce0f-4cde-9d24-eac2b190ac63",
+  "cmdId": "e9654947-212f-4c67-9d8a-257e0b932e55",
   "state": "CS_PASSED"
  }
 }
