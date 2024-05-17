@@ -28,8 +28,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define CL_HPP_ENABLE_PROGRAM_CONSTRUCTION_FROM_ARRAY_COMPATIBILITY 1
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 
-#define DATA_SIZE 4096
-#define MATRIX_WIDTH (64)
+#define DATA_SIZE 256*256
+#define MATRIX_WIDTH (256)
 
 #include <vector>
 #include <unistd.h>
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
     // ------------------------------------------------------------------------------------
     // Step 2: Create buffers and initialize test values
     // ------------------------------------------------------------------------------------
-    const size_t matrix_size = 64*64;
+    const size_t matrix_size = 256*256;
 
     std::vector<int, aligned_allocator<int> > in1(matrix_size);
     std::vector<int, aligned_allocator<int> > in2(matrix_size);
@@ -193,8 +193,8 @@ int main(int argc, char **argv)
     printf("Start assigning values\n");
     for (int i = 0; i < matrix_size; i++)
     {
-        in1.at(i) = rand() % 4096;
-        in2.at(i) = rand() % 4096;
+        in1.at(i) = rand() % 256;
+        in2.at(i) = rand() % 256;
         in3.at(i) = 0;
         in4.at(i) = 0;
         out.at(i) = 0;
@@ -269,6 +269,8 @@ int main(int argc, char **argv)
     // bool match = Compare_matrices(out_sw, out);
     // Destroy_matrix(out_sw);
     bool match = true;
+
+    std::cout << "TEST 1" << out[24] << "TEST 2" << out[25] << std::endl;
 
     // for (int i = 0; i < MATRIX_WIDTH; i++) {
     // for (int j = 0; j < MATRIX_WIDTH; j++)

@@ -11,3 +11,5 @@
 #-----------------------------------------------------------
 start_gui
 create_project dummy
+exit
+INFO: [Common 17-206] Exiting vitis_analyzer at Thu May 16 21:20:20 2024...
