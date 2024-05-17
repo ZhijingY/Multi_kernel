@@ -12,11 +12,11 @@ export XILINX_XRT=/usr
 
 ./app.exe v
 
-scp root@10.10.7.1:/media/sd-mmcblk0p1/xclbin.run_summary
+scp root@10.10.7.1:/media/sd-mmcblk0p1/xclbin.run_summary ./
 
-scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_trace.csv
+scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_trace.csv ./
 
-scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_summary.csv
+scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_summary.csv ./
 
 vitis_analyzer xclbin.run_summary
 
