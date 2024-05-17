@@ -214,3 +214,5 @@ selectTree(RDIResource.NavigableReportTab_REPORT_NAVIGATION_TREE, "[Report Conte
 // WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
 // WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
 // WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1001 ms.
