@@ -1,22 +1,3 @@
-source sourceMe
+Multi-kernel program based on [Vitis concurrent kernel tutorial](https://github.com/Xilinx/Vitis_Accel_Examples/tree/2021.1/host/concurrent_kernel_execution), applied amendments so the code works on 2021 version of vitis.
 
-make all
-
-sudo ifconfig enx000ec6838bb0 10.10.7.2 netmask 255.0.0.0
-
-scp -r  package/sd_card/* root@10.10.7.1:/media/sd-mmcblk0p1/
-
-cd /media/sd-mmcblk0p1
-
-export XILINX_XRT=/usr
-
-./app.exe v
-
-scp root@10.10.7.1:/media/sd-mmcblk0p1/xclbin.run_summary ./
-
-scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_trace.csv ./
-
-scp root@10.10.7.1:/media/sd-mmcblk0p1/opencl_summary.csv ./
-
-vitis_analyzer xclbin.run_summary
-
+Used stall_trace feature to observe the different stall time applied on each kernel.
